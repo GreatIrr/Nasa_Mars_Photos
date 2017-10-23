@@ -27,7 +27,7 @@ public class NasaRestSteps {
     }
 
     @Step
-    public void getFirst10Ids() {
+    public void getFirst10IdsPhotoBody() {
         ResponseWrapper responseWrapper = nasaRest.getMars1000Sol();
         String body = responseWrapper.getBody();
         Mars mars = NasaRestPhotoParser.parseNasaPhotoJson(body);
@@ -40,13 +40,15 @@ public class NasaRestSteps {
         List<Integer> first10Ids = ids.subList(0, 9);
         System.out.println(Arrays.toString(first10Ids.toArray()));
 
+        for(int id : first10Ids) {
+            String url = getPhotoUrl(mars, id);
+            ResponseWrapper responseWrapperPhoto = nasaRest.sendCustomRequest(url);
+            System.out.println("============" + id +"===============");
+            System.out.println(responseWrapperPhoto.getHeaders().toString());
+        }
+
     }
 
-    @Step
-    public void getPhotoMetaData(final String url) {
-        ResponseWrapper responseWrapper = nasaRest.sendCustomRequest(url);
-        System.out.println(responseWrapper.getBody());
-    }
 
 
     private String getPhotoUrl(final Mars mars, final int id) {

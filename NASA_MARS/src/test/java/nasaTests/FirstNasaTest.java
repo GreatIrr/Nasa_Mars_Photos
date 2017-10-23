@@ -1,9 +1,7 @@
 package nasaTests;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import steps.NasaRestSteps;
-import untils.ProjectProperties;
 
 /**
  * Created by Iryna_Bartnytska on 10/14/2017.
@@ -15,6 +13,6 @@ public class FirstNasaTest {
     @Test
     public void testPrintBody() {
        // nasaRestSteps.sendRequestAndPrintBody();
-        nasaRestSteps.getFirst10Ids();
+        nasaRestSteps.getFirst10IdsPhotoBody();
     }
 }
