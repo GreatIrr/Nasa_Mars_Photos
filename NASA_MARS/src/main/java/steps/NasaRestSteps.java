@@ -1,9 +1,6 @@
 package steps;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import net.thucydides.core.annotations.Step;
 
@@ -27,8 +24,32 @@ public class NasaRestSteps {
     }
 
     @Step
-    public void getFirst10IdsPhotoBody() {
+    public void getFirst10SolIdsPhotoBody() {
         ResponseWrapper responseWrapper = nasaRest.getMars1000Sol();
+        List<Integer> firstSolIds = getFirstN_ids(responseWrapper, 1);
+        System.out.println("list of first ids = " + Arrays.toString(firstSolIds.toArray()));
+    }
+
+
+    @Step
+    public void getFirst10EarthIdsPhotoBody() {
+        ResponseWrapper responseWrapper = nasaRest.getMarsEarth1000Sol();
+        List<Integer> firstSolIds = getFirstN_ids(responseWrapper, 1);
+        System.out.println("list of first ids = " + Arrays.toString(firstSolIds.toArray()));
+    }
+
+
+    private Photos getPhotoInfo(final String body, final int id) {
+        Mars mars = NasaRestPhotoParser.parseNasaPhotoJson(body);
+        for(Photos photo : mars.getPhotos()) {
+            if(photo.getId().equals(id)) {
+                return photo;
+            }
+        }
+        return null;
+    }
+
+    private List<Integer> getFirstN_ids(final ResponseWrapper responseWrapper, final int count) {
         String body = responseWrapper.getBody();
         Mars mars = NasaRestPhotoParser.parseNasaPhotoJson(body);
         System.out.println("Mars all list of photos=" + mars.getPhotos().size());
@@ -37,26 +58,10 @@ public class NasaRestSteps {
             ids.add(photo.getId());
         }
         Collections.sort(ids);
-        List<Integer> first10Ids = ids.subList(0, 9);
-        System.out.println(Arrays.toString(first10Ids.toArray()));
-
-        for(int id : first10Ids) {
-            String url = getPhotoUrl(mars, id);
-            ResponseWrapper responseWrapperPhoto = nasaRest.sendCustomRequest(url);
-            System.out.println("============" + id +"===============");
-            System.out.println(responseWrapperPhoto.getHeaders().toString());
+        List<Integer> first10Ids = new ArrayList<>();
+        if (count >= 0) {
+           first10Ids = ids.subList(0, count);
         }
-
-    }
-
-
-
-    private String getPhotoUrl(final Mars mars, final int id) {
-        for(Photos photo : mars.getPhotos()) {
-            if(photo.getId().equals(id)) {
-                return photo.getImgSrc();
-            }
-        }
-        return null;
+        return first10Ids;
     }
 }
