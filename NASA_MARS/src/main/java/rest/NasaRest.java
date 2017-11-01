@@ -49,7 +49,7 @@ public class NasaRest {
     }
 
     private String getEarthDateNSol(final int sols) {
-        double sol = 24 * 60 * 60 + 35.244;  //hardcoded sol duration
+        double sol = 24 * 60 * 60 + 39 * 60 + 35.244147;  //hardcoded sol duration
         int sol1000 = (int) (sol * sols);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
         Date date = null;
