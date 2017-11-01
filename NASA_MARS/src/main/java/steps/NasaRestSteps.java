@@ -1,6 +1,13 @@
 package steps;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+import net.javacrumbs.jsonunit.JsonAssert;
+import org.assertj.core.api.SoftAssertions;
 
 import net.thucydides.core.annotations.Step;
 
@@ -24,25 +31,43 @@ public class NasaRestSteps {
     }
 
     @Step
-    public void getFirst10SolIdsPhotoBody() {
+    public List<String> getFirst10SolIdsPhotoBody() {
         ResponseWrapper responseWrapper = nasaRest.getMars1000Sol();
-        List<Integer> firstSolIds = getFirstN_ids(responseWrapper, 1);
+        List<Integer> firstSolIds = getFirstN_ids(responseWrapper, 10); // hardcoded 10 elements
         System.out.println("list of first ids = " + Arrays.toString(firstSolIds.toArray()));
-    }
+        List<String> result = new ArrayList<>();
+        for (int id : firstSolIds) {
+            Photos photo = getPhotoInfo(responseWrapper.getBody(), id);
+            result.add(NasaRestPhotoParser.parseToString(photo));
+        }
+        return result;
 
+    }
 
     @Step
-    public void getFirst10EarthIdsPhotoBody() {
+    public List<String> getFirst10EarthIdsPhotoBody() {
         ResponseWrapper responseWrapper = nasaRest.getMarsEarth1000Sol();
-        List<Integer> firstSolIds = getFirstN_ids(responseWrapper, 1);
+        List<Integer> firstSolIds = getFirstN_ids(responseWrapper, 10); // hardcoded 10 elements
         System.out.println("list of first ids = " + Arrays.toString(firstSolIds.toArray()));
+        List<String> result = new ArrayList<>();
+        for (int id : firstSolIds) {
+            Photos photo = getPhotoInfo(responseWrapper.getBody(), id);
+            result.add(NasaRestPhotoParser.parseToString(photo));
+        }
+        return result;
     }
 
+    @Step
+    public void assertListOfPhotos(final List<String> marsPhotos, final List<String> earthPhotos) {
+        String marsJsons = NasaRestPhotoParser.createJsonFromList(marsPhotos);
+        String earthJsons = NasaRestPhotoParser.createJsonFromList(earthPhotos);
+        JsonAssert.assertJsonEquals(marsJsons,earthJsons);
+    }
 
     private Photos getPhotoInfo(final String body, final int id) {
         Mars mars = NasaRestPhotoParser.parseNasaPhotoJson(body);
-        for(Photos photo : mars.getPhotos()) {
-            if(photo.getId().equals(id)) {
+        for (Photos photo : mars.getPhotos()) {
+            if (photo.getId().equals(id)) {
                 return photo;
             }
         }
@@ -60,7 +85,7 @@ public class NasaRestSteps {
         Collections.sort(ids);
         List<Integer> first10Ids = new ArrayList<>();
         if (count >= 0) {
-           first10Ids = ids.subList(0, count);
+            first10Ids = ids.subList(0, count);
         }
         return first10Ids;
     }

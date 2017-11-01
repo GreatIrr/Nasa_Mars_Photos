@@ -12,8 +12,6 @@ public class FirstNasaTest {
 
     @Test
     public void testPrintBody() {
-       // nasaRestSteps.sendRequestAndPrintBody();
-        nasaRestSteps.getFirst10SolIdsPhotoBody();
-        nasaRestSteps.getFirst10EarthIdsPhotoBody();
+          nasaRestSteps.assertListOfPhotos(nasaRestSteps.getFirst10SolIdsPhotoBody(), nasaRestSteps.getFirst10EarthIdsPhotoBody());
     }
 }
