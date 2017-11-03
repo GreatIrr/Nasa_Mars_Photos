@@ -9,6 +9,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static java.lang.String.format;
+
 /**
  * Created by Iryna_Bartnytska on 10/13/2017.
  */
@@ -19,7 +21,7 @@ public class NasaRest {
     private static final String REST_API_KEY = projectProperties.getProperty("rest.api.key");
     private static final String API_KEY = projectProperties.getProperty("api.key");
     private static final String MARS_PHOTOS = projectProperties.getProperty("mars.photos");
-    private static final String MARS_1000_sol = projectProperties.getProperty("mars.1000.sol");
+    private static final String MARS_N_SOL = projectProperties.getProperty("mars.1000.sol");
     private static final String LANDING_DATE = projectProperties.getProperty("mars.landing.date");
     private static final String EARTH_DATE = projectProperties.getProperty("earth.date");
 
@@ -28,10 +30,10 @@ public class NasaRest {
         return AbstractRequest.get(HOST + REST_API_KEY + API_KEY).sendAndGetResponse();
     }
 
-    public ResponseWrapper getMars1000Sol() {
-        System.out.println("request = " + MARS_PHOTOS + MARS_1000_sol + REST_API_KEY + API_KEY);
+    public ResponseWrapper getMarsNSol(final int sol) {
+        System.out.println("request = " + MARS_PHOTOS + format(MARS_N_SOL, sol) + REST_API_KEY + API_KEY);
         return AbstractRequest
-                .get(MARS_PHOTOS + MARS_1000_sol + REST_API_KEY + API_KEY)
+                .get(MARS_PHOTOS + format(MARS_N_SOL, sol) + REST_API_KEY + API_KEY)
                 .sendAndGetResponse();
     }
 

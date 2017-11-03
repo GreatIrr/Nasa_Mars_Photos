@@ -1,0 +1,4 @@
+Mars Photo API
+In order to check the check photos on 1000 sol
+As a user
+I get find earth date and compare it with 1000 sol
