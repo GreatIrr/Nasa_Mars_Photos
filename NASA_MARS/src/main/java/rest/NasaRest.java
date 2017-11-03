@@ -37,6 +37,13 @@ public class NasaRest {
                 .sendAndGetResponse();
     }
 
+    public ResponseWrapper getEarthNSol(final int sol) {
+        String earthDate1000Sol = getEarthDateNSol(sol) + "&";
+        System.out.println("request = " + MARS_PHOTOS + EARTH_DATE + earthDate1000Sol + REST_API_KEY + API_KEY);
+        return AbstractRequest.get(MARS_PHOTOS + EARTH_DATE + earthDate1000Sol + REST_API_KEY + API_KEY)
+                .sendAndGetResponse();
+    }
+
     public ResponseWrapper sendCustomRequest(final String url) {
         System.out.println("Custom url = " + url);
         return AbstractRequest.get(url).sendAndGetResponse();
@@ -58,6 +65,7 @@ public class NasaRest {
         try {
             date = sdf.parse(LANDING_DATE);
             date = DateUtils.addSeconds(date, sol1000);
+            System.out.println("Add seconds = " + sol1000);
             return sdf.format(date);
         } catch (ParseException e) {
             System.out.println("Could not calculate earth date");

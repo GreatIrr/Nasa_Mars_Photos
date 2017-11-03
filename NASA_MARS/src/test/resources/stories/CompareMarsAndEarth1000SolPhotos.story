@@ -8,7 +8,7 @@ So that I can check that both api return
 Scenario: scenario description
 Given User is a good guy
 When User sends Mars '<sol>' Sol request and remembers Mars response
-And User sends Earth '<sol>' Sol request and remembers Mars response
+And User sends Earth '<sol>' Sol request and remembers Earth response
 Then User sees that Mars And Earth responses are equal
 
 Examples:

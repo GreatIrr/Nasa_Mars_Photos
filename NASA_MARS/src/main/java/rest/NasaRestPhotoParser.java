@@ -26,7 +26,7 @@ public class NasaRestPhotoParser extends JsonParser {
     public static String createJsonFromPhotoList(final List<Photos> list) {
         List<String> result = new ArrayList<>();
         for(Photos o : list) {
-            result.add(o.toString());
+            result.add(parseToString(o));
         }
         return createJsonFromList(result);
     }

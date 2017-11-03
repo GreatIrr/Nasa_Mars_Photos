@@ -25,7 +25,7 @@ public class ApiDefinitionSteps {
         nasaRestSteps.sendMarsSol(sol);
     }
 
-    @When("User sends Earth '$sol' Sol request and remembers Mars response")
+    @When("User sends Earth '$sol' Sol request and remembers Earth response")
     public void userSendsAndRemembersEarthSol(final int sol) {
         nasaRestSteps.sendEarthSol(sol);
     }

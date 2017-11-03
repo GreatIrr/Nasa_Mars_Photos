@@ -1,5 +1,6 @@
 package session;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.serenitybdd.core.Serenity;
@@ -38,7 +39,7 @@ public class Session {
     }
 
     public static void put(final Keys keys, final Object value) {
-        Serenity.getCurrentSession().put(keys, value);
+        Serenity.getCurrentSession().put(keys.toString(), value);
     }
 
     public static List<Photos> getEarthPhotoList() {
@@ -51,14 +52,14 @@ public class Session {
 
     public static void addMarsPhoto(final Photos photos) {
         if (!Session.containKeys(Keys.MARS_RESPONSE)) {
-            Session.put(Keys.MARS_RESPONSE, photos);
+            Session.put(Keys.MARS_RESPONSE, new ArrayList<Photos>());
         }
         Session.getValue(Keys.MARS_RESPONSE, List.class).add(photos);
     }
 
     public static void addEarthPhoto(final Photos photos) {
         if (!Session.containKeys(Keys.EARTH_RESPONSE)) {
-            Session.put(Keys.EARTH_RESPONSE, photos);
+            Session.put(Keys.EARTH_RESPONSE,  new ArrayList<Photos>());
         }
         Session.getValue(Keys.EARTH_RESPONSE, List.class).add(photos);
     }

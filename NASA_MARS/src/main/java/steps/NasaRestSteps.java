@@ -12,6 +12,7 @@ import net.thucydides.core.annotations.Step;
 import httpthings.ResponseWrapper;
 import jsons.models.Mars;
 import jsons.models.Photos;
+import org.assertj.core.api.Assert;
 import rest.NasaRest;
 import rest.NasaRestPhotoParser;
 import session.Session;
@@ -41,7 +42,7 @@ public class NasaRestSteps {
 
     @Step
     public void sendEarthSol(final int sol) {
-        ResponseWrapper responseWrapper = nasaRest.getMarsNSol(sol);
+        ResponseWrapper responseWrapper = nasaRest.getEarthNSol(sol);
         List<Integer> firstSolIds = getFirstN_ids(responseWrapper, 10); // hardcoded 10 elements
         for (int id : firstSolIds) {
             Photos photo = getPhotoInfo(responseWrapper.getBody(), id);
@@ -53,6 +54,7 @@ public class NasaRestSteps {
     public void getAndCompareMarsAndEarthResponses() {
         List<Photos> marsPhotos = Session.getMarsPhotoList();
         List<Photos> earthPhotos = Session.getEarthPhotoList();
+        org.junit.Assert.assertEquals("Different sizes of lists", marsPhotos.size(), earthPhotos.size());
         String marsJsons = NasaRestPhotoParser.createJsonFromPhotoList(marsPhotos);
         String earthJsons = NasaRestPhotoParser.createJsonFromPhotoList(earthPhotos);
         JsonAssert.assertJsonEquals(marsJsons, earthJsons);
@@ -108,7 +110,7 @@ public class NasaRestSteps {
         return null;
     }
 
-    private List<Integer> getFirstN_ids(final ResponseWrapper responseWrapper, final int count) {
+    private List<Integer> getFirstN_ids(final ResponseWrapper responseWrapper, final int count) throws IndexOutOfBoundsException {
         String body = responseWrapper.getBody();
         Mars mars = NasaRestPhotoParser.parseNasaPhotoJson(body);
         System.out.println("Mars all list of photos=" + mars.getPhotos().size());
