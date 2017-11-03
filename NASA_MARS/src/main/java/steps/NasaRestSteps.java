@@ -7,15 +7,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.javacrumbs.jsonunit.JsonAssert;
-import org.assertj.core.api.SoftAssertions;
-
 import net.thucydides.core.annotations.Step;
 
 import httpthings.ResponseWrapper;
 import jsons.models.Mars;
 import jsons.models.Photos;
+import org.assertj.core.api.Assert;
 import rest.NasaRest;
 import rest.NasaRestPhotoParser;
+import session.Session;
 
 /**
  * Created by Iryna_Bartnytska on 10/13/2017.
@@ -31,8 +31,40 @@ public class NasaRestSteps {
     }
 
     @Step
+    public void sendMarsSol(final int sol) {
+        ResponseWrapper responseWrapper = nasaRest.getMarsNSol(sol);
+        List<Integer> firstSolIds = getFirstN_ids(responseWrapper, 10); // hardcoded 10 elements
+        for (int id : firstSolIds) {
+            Photos photo = getPhotoInfo(responseWrapper.getBody(), id);
+            Session.addMarsPhoto(photo);
+        }
+    }
+
+    @Step
+    public void sendEarthSol(final int sol) {
+        ResponseWrapper responseWrapper = nasaRest.getEarthNSol(sol);
+        List<Integer> firstSolIds = getFirstN_ids(responseWrapper, 10); // hardcoded 10 elements
+        for (int id : firstSolIds) {
+            Photos photo = getPhotoInfo(responseWrapper.getBody(), id);
+            Session.addEarthPhoto(photo);
+        }
+    }
+
+    @Step
+    public void getAndCompareMarsAndEarthResponses() {
+        List<Photos> marsPhotos = Session.getMarsPhotoList();
+        List<Photos> earthPhotos = Session.getEarthPhotoList();
+        org.junit.Assert.assertEquals("Different sizes of lists", marsPhotos.size(), earthPhotos.size());
+        String marsJsons = NasaRestPhotoParser.createJsonFromPhotoList(marsPhotos);
+        String earthJsons = NasaRestPhotoParser.createJsonFromPhotoList(earthPhotos);
+        JsonAssert.assertJsonEquals(marsJsons, earthJsons);
+    }
+
+
+
+    @Step
     public List<String> getFirst10SolIdsPhotoBody() {
-        ResponseWrapper responseWrapper = nasaRest.getMars1000Sol();
+        ResponseWrapper responseWrapper = nasaRest.getMarsNSol(1000);
         List<Integer> firstSolIds = getFirstN_ids(responseWrapper, 10); // hardcoded 10 elements
         System.out.println("list of first ids = " + Arrays.toString(firstSolIds.toArray()));
         List<String> result = new ArrayList<>();
@@ -43,6 +75,10 @@ public class NasaRestSteps {
         return result;
 
     }
+
+
+
+
 
     @Step
     public List<String> getFirst10EarthIdsPhotoBody() {
@@ -61,7 +97,7 @@ public class NasaRestSteps {
     public void assertListOfPhotos(final List<String> marsPhotos, final List<String> earthPhotos) {
         String marsJsons = NasaRestPhotoParser.createJsonFromList(marsPhotos);
         String earthJsons = NasaRestPhotoParser.createJsonFromList(earthPhotos);
-        JsonAssert.assertJsonEquals(marsJsons,earthJsons);
+        JsonAssert.assertJsonEquals(marsJsons, earthJsons);
     }
 
     private Photos getPhotoInfo(final String body, final int id) {
@@ -74,7 +110,7 @@ public class NasaRestSteps {
         return null;
     }
 
-    private List<Integer> getFirstN_ids(final ResponseWrapper responseWrapper, final int count) {
+    private List<Integer> getFirstN_ids(final ResponseWrapper responseWrapper, final int count) throws IndexOutOfBoundsException {
         String body = responseWrapper.getBody();
         Mars mars = NasaRestPhotoParser.parseNasaPhotoJson(body);
         System.out.println("Mars all list of photos=" + mars.getPhotos().size());
