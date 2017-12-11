@@ -5,6 +5,7 @@ import org.apache.commons.lang.time.DateUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 import static java.lang.String.format;
 
@@ -30,5 +31,15 @@ public class TestSomeFeatures {
 
         System.out.println(format("sol=%s&", "1000"));
 
+        Random random = new Random(-6732303926L);
+        for (int i = 0; i < 5; i++) {
+            int randNumber = random.nextInt(5);
+            System.out.println(randNumber);
+        }
+        System.out.println("---------");
+        System.out.println(random.nextInt(10));
+        System.out.println(random.nextInt(10));
+        System.out.println(random.nextInt(10));
     }
+
 }

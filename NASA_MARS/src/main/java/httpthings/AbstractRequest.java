@@ -47,6 +47,7 @@ public class AbstractRequest {
             responseWrapper = new ResponseWrapper(httpResponse);
         } catch (IOException e) {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return responseWrapper;
     }

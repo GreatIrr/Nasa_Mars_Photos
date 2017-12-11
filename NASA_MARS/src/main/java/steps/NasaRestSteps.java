@@ -6,13 +6,15 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
+
 import net.javacrumbs.jsonunit.JsonAssert;
 import net.thucydides.core.annotations.Step;
 
 import httpthings.ResponseWrapper;
 import jsons.models.Mars;
 import jsons.models.Photos;
-import org.assertj.core.api.Assert;
 import rest.NasaRest;
 import rest.NasaRestPhotoParser;
 import session.Session;
@@ -54,13 +56,23 @@ public class NasaRestSteps {
     public void getAndCompareMarsAndEarthResponses() {
         List<Photos> marsPhotos = Session.getMarsPhotoList();
         List<Photos> earthPhotos = Session.getEarthPhotoList();
-        org.junit.Assert.assertEquals("Different sizes of lists", marsPhotos.size(), earthPhotos.size());
-        String marsJsons = NasaRestPhotoParser.createJsonFromPhotoList(marsPhotos);
-        String earthJsons = NasaRestPhotoParser.createJsonFromPhotoList(earthPhotos);
-        JsonAssert.assertJsonEquals(marsJsons, earthJsons);
+
+        SoftAssertions softAssertions = new SoftAssertions();
+
+        softAssertions.assertThat(earthPhotos.size()).as("Earth list size is not equal to mars photo")
+                .isEqualTo(marsPhotos.size());
+
+        for( int i = 0; i < earthPhotos.size(); i ++) {
+            softAssertions.assertThat(earthPhotos.get(i)).as("Earth Photo json with id = " + earthPhotos.get(i).getId() + "is not equal to Mars photo")
+                    .isEqualToComparingFieldByFieldRecursively(marsPhotos.get(i));
+        }
+//        Assertions.assertThat(marsPhotos.get(0)).as("").isEqualToComparingFieldByFieldRecursively(earthPhotos.get(0));
+//        org.junit.Assert.assertEquals("Different sizes of lists", marsPhotos.size(), earthPhotos.size());
+//        String marsJsons = NasaRestPhotoParser.createJsonFromPhotoList(marsPhotos);
+//        String earthJsons = NasaRestPhotoParser.createJsonFromPhotoList(earthPhotos);
+//        JsonAssert.assertJsonEquals(marsJsons, earthJsons);
+        softAssertions.assertAll();
     }
-
-
 
     @Step
     public List<String> getFirst10SolIdsPhotoBody() {
@@ -75,10 +87,6 @@ public class NasaRestSteps {
         return result;
 
     }
-
-
-
-
 
     @Step
     public List<String> getFirst10EarthIdsPhotoBody() {
@@ -110,7 +118,8 @@ public class NasaRestSteps {
         return null;
     }
 
-    private List<Integer> getFirstN_ids(final ResponseWrapper responseWrapper, final int count) throws IndexOutOfBoundsException {
+    private List<Integer> getFirstN_ids(final ResponseWrapper responseWrapper, final int count)
+            throws IndexOutOfBoundsException {
         String body = responseWrapper.getBody();
         Mars mars = NasaRestPhotoParser.parseNasaPhotoJson(body);
         System.out.println("Mars all list of photos=" + mars.getPhotos().size());

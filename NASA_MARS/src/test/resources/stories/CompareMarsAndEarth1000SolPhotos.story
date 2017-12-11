@@ -14,4 +14,4 @@ Then User sees that Mars And Earth responses are equal
 Examples:
 | sol  |
 | 1000 |
-| 500  |
+| 900  |
