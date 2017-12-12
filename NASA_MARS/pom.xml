@@ -124,6 +124,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
+                    <testFailureIgnore>true</testFailureIgnore>
                     <properties>
                         <property>
                             <name>listener</name>
@@ -205,11 +206,11 @@
     <reporting>
         <excludeDefaults>true</excludeDefaults>
         <plugins>
-            <!--<plugin>-->
-                <!--<groupId>net.serenity-bdd.maven.plugins</groupId>-->
-                <!--<artifactId>serenity-maven-plugin</artifactId>-->
-                <!--<version>${serenity.maven-plugin.version}</version>-->
-            <!--</plugin>-->
+            <plugin>
+                <groupId>net.serenity-bdd.maven.plugins</groupId>
+                <artifactId>serenity-maven-plugin</artifactId>
+                <version>${serenity.maven-plugin.version}</version>
+            </plugin>
 
             <plugin>
                 <groupId>ru.yandex.qatools.allure</groupId>
