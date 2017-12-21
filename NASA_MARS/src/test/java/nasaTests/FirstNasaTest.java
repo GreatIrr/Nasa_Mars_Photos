@@ -11,13 +11,13 @@ public class FirstNasaTest {
 
     private NasaRestSteps nasaRestSteps = new NasaRestSteps();
 
-//    @Test
-//    public void testPrintBody() {
-//          nasaRestSteps.assertListOfPhotos(nasaRestSteps.getFirst10SolIdsPhotoBody(), nasaRestSteps.getFirst10EarthIdsPhotoBody());
-//    }
+    @Test
+    public void testPrintBody() {
+          nasaRestSteps.assertListOfPhotos(nasaRestSteps.getFirst10SolIdsPhotoBody(), nasaRestSteps.getFirst10EarthIdsPhotoBody());
+    }
 
     @Test
     public void startTest() {
-        Assert.assertTrue("Does 1 == 2", 1 == 2);
+        Assert.assertTrue("Does 1 == 21", 2 == 21);
     }
 }

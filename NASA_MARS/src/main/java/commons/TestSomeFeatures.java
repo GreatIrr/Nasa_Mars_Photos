@@ -2,6 +2,10 @@ package commons;
 
 import org.apache.commons.lang.time.DateUtils;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,7 +18,7 @@ import static java.lang.String.format;
  */
 public class TestSomeFeatures {
 
-    public static void main(String[] args) throws ParseException {
+//    public static void main(String[] args) {
 //        double sol = 24 * 60 * 60 +  35.244;
 //        System.out.println("sol = " + sol);
 //        int sol1000 = (int) (sol * 1000);
@@ -29,17 +33,51 @@ public class TestSomeFeatures {
 //        String a = null;
 //        System.out.println("a = " + a.toString());
 
-        System.out.println(format("sol=%s&", "1000"));
+//        System.out.println(format("sol=%s&", "1000"));
+//
+//        Random random = new Random(-6732303926L);
+//        for (int i = 0; i < 5; i++) {
+//            int randNumber = random.nextInt(5);
+//            System.out.println(randNumber);
+//        }
+//        System.out.println("---------");
+//        System.out.println(random.nextInt(10));
+//        System.out.println(random.nextInt(10));
+//        System.out.println(random.nextInt(10));
 
-        Random random = new Random(-6732303926L);
-        for (int i = 0; i < 5; i++) {
-            int randNumber = random.nextInt(5);
-            System.out.println(randNumber);
+        public static void main(String[] args) {
+            Method[] methods = SampleClass.class.getMethods();
+            Annotation[][] annotations = methods[1].getParameterAnnotations();
+            for(Annotation[] annotation1 : annotations){
+                for(Annotation annotation : annotation1){
+                    if(annotation instanceof CustomAnnotation){
+                        CustomAnnotation customAnnotation = (CustomAnnotation) annotation;
+                        System.out.println("value: " + customAnnotation.value());
+                    }
+                }
+            }
         }
-        System.out.println("---------");
-        System.out.println(random.nextInt(10));
-        System.out.println(random.nextInt(10));
-        System.out.println(random.nextInt(10));
     }
 
-}
+    @CustomAnnotation(value = "Sample Class Annotation")
+    class SampleClass {
+        private String sampleField;
+
+        public String getSampleField() {
+            return sampleField;
+        }
+
+        public void setSampleField(@CustomAnnotation("Test") String sampleField) {
+            this.sampleField = sampleField;
+        }
+        public void test(String key) {
+            setSampleField(key);
+        }
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface CustomAnnotation {
+        public String value();
+    }
+
+
