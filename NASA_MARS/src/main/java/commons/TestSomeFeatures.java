@@ -29,6 +29,7 @@ public class TestSomeFeatures {
 //        System.out.println("a = " + a.toString());
 
         System.out.println(format("sol=%s&", "1000"));
+        System.out.println("testing git");
 
     }
 }
