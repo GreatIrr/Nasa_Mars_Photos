@@ -41,31 +41,11 @@ public abstract class CommonRest {
 
     }
 
-    void testAnnotation(String... key) {
+    void testAnnotation(Method method, String... key) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(getHost());
-        Method method = null;
-        method = this.getClass().getMethods()[0];
-        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-
-        int i = 0;
-        for(Annotation[] annotations : parameterAnnotations){
-            String param = key[i];
-
-            for(Annotation annotation : annotations){
-                if(annotation instanceof Query){
-                    Query myAnnotation = (Query) annotation;
-                    System.out.println("param: " + key[i]);
-                    System.out.println("value: " + myAnnotation.value());
-                    stringBuilder.append(myAnnotation.value());
-                    stringBuilder.append("=");
-                    stringBuilder.append(key[i]);
-                    stringBuilder.append("&");
-                }
-            }
-            i++;
-        }
-
+        BuildRequest buildRequest = new BuildRequest(method);
+        stringBuilder.append(buildRequest.returnRequest(key));
         setUrl(stringBuilder.toString());
         System.out.println("url = " + getUrl());
     }

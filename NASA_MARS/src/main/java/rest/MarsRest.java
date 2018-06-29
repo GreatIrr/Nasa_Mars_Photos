@@ -1,8 +1,8 @@
 package rest;
 
-import httpthings.ResponseWrapper;
-import annotations.Query;
 import org.junit.Test;
+
+import annotations.Query;
 
 /**
  * Created by Iryna_Bartnytska on 12/20/2017.
@@ -19,6 +19,10 @@ public class MarsRest extends CommonRest {
     }
 
     public void getTest(@Query("api_key") String key) {
-        testAnnotation(key);
+        try {
+            testAnnotation(this.getClass().getMethod("getTest", String[].class), key);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
     }
 }
